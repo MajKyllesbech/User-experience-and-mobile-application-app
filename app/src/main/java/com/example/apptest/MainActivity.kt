@@ -72,9 +72,10 @@ enum class AppDestinations(
     val label: String,
     val icon: ImageVector,
 ) {
-    HOME("Home", Icons.Default.Home),
-    FAVORITES("Favorites", Icons.Default.Favorite),
-    PROFILE("Profile", Icons.Default.AccountBox),
+    HOME("Hjem", Icons.Default.Home),
+    INDKØBSLISTE("Indkøbsliste", Icons.Default.Favorite),
+    FAVORITES("Favoritter", Icons.Default.Favorite),
+    PROFILE("Profil", Icons.Default.AccountBox),
 }
 
 @Composable
