@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="tipCalculatorKMP">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/tipCalculatorKMP.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
