@@ -6,23 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.example.apptest.ui.theme.AppTestTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,65 +21,49 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AppTestTheme {
-                AppTestApp()
+                // This is the main entry point for our app
+                GroceryApp()
             }
         }
     }
 }
 
-@PreviewScreenSizes
-@Composable
-fun AppTestApp() {
-    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
+// --- This enum defines our screens ---
+enum class Screen {
+    WELCOME,
+    HOME
+}
 
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            AppDestinations.entries.forEach {
-                item(
-                    icon = {
-                        Icon(
-                            it.icon,
-                            contentDescription = it.label
-                        )
-                    },
-                    label = { Text(it.label) },
-                    selected = it == currentDestination,
-                    onClick = { currentDestination = it }
+/**
+ * This is the main composable for your app.
+ * It holds the state of which screen is currently visible.
+ */
+@Composable
+fun GroceryApp() {
+    // This state variable tracks which screen to show.
+    var currentScreen by rememberSaveable { mutableStateOf(Screen.WELCOME) }
+
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
+        // This 'when' statement is our navigation logic
+        when (currentScreen) {
+            Screen.WELCOME -> {
+                // Show the WelcomeScreen (from WelcomeScreen.kt)
+                WelcomeScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    onHomeClicked = {
+                        // When the button is clicked,
+                        // change the state to HOME
+                        currentScreen = Screen.HOME
+                    }
+                )
+            }
+            Screen.HOME -> {
+                // Show the HomeScreen (from HomeScreen.kt)
+                HomeScreen(
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
         }
-    ) {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            Greeting(
-                name = "Android",
-                modifier = Modifier.padding(innerPadding)
-            )
-        }
-    }
-}
-
-enum class AppDestinations(
-    val label: String,
-    val icon: ImageVector,
-) {
-    HOME("Hjem", Icons.Default.Home),
-    INDKØBSLISTE("Indkøbsliste", Icons.Default.Favorite),
-    FAVORITES("Favoritter", Icons.Default.Favorite),
-    PROFILE("Profil", Icons.Default.AccountBox),
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AppTestTheme {
-        Greeting("Android")
     }
 }
