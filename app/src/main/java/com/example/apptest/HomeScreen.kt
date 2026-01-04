@@ -62,7 +62,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         item {
             Spacer(Modifier.height(16.dp))
             Text(
-                text = "Hello, User!",
+                text = "Hej, bruger!",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -74,7 +74,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { searchText = it },
-                label = { Text("Search for groceries...") },
+                label = { Text("Søg efter fødevarer...") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp)
@@ -85,7 +85,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         // Categories
         item {
             Text(
-                text = "Categories",
+                text = "Kategorier",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
@@ -105,7 +105,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         // Popular Items title
         item {
             Text(
-                text = "Popular Items",
+                text = "Populære varer",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )

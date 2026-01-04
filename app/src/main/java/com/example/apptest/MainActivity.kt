@@ -14,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.apptest.ui.theme.AppTestTheme
+import com.example.apptest.BottomBar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +32,11 @@ class MainActivity : ComponentActivity() {
 // --- This enum defines our screens ---
 enum class Screen {
     WELCOME,
-    HOME
+    HOME,
+    PRODUCT_DETAILS,
+    FAVORITES,
+    SHOPPING_LIST,
+    PROFILE
 }
 
 /**
@@ -40,29 +45,50 @@ enum class Screen {
  */
 @Composable
 fun GroceryApp() {
-    // This state variable tracks which screen to show.
     var currentScreen by rememberSaveable { mutableStateOf(Screen.WELCOME) }
 
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            if (currentScreen != Screen.WELCOME) {
+                BottomBar(
+                    currentScreen = currentScreen,
+                    onScreenSelected = { currentScreen = it }
+                )
+            }
+        }
+    ) { innerPadding ->
 
-        // This 'when' statement is our navigation logic
         when (currentScreen) {
             Screen.WELCOME -> {
-                // Show the WelcomeScreen (from WelcomeScreen.kt)
                 WelcomeScreen(
                     modifier = Modifier.padding(innerPadding),
                     onHomeClicked = {
-                        // When the button is clicked,
-                        // change the state to HOME
                         currentScreen = Screen.HOME
                     }
                 )
             }
+
             Screen.HOME -> {
-                // Show the HomeScreen (from HomeScreen.kt)
                 HomeScreen(
                     modifier = Modifier.padding(innerPadding)
                 )
+            }
+
+            Screen.PROFILE -> {
+                // ProfileScreen()
+            }
+
+            Screen.FAVORITES -> {
+                // FavoritesScreen()
+            }
+
+            Screen.SHOPPING_LIST -> {
+                // ShoppingListScreen()
+            }
+
+            Screen.PRODUCT_DETAILS -> {
+                // ProductDetailsScreen()
             }
         }
     }
