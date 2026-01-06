@@ -4,28 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp // <--- This fixes the 'dp' error
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.apptest.ui.theme.AppTestTheme
+import com.example.apptest.BottomBar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,76 +22,74 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AppTestTheme {
-                MainAppStructure()
+                // This is the main entry point for our app
+                GroceryApp()
             }
         }
     }
 }
 
+// --- This enum defines our screens ---
+enum class Screen {
+    WELCOME,
+    HOME,
+    PRODUCT_DETAILS,
+    FAVORITES,
+    SHOPPING_LIST,
+    PROFILE
+}
+
+/**
+ * This is the main composable for your app.
+ * It holds the state of which screen is currently visible.
+ */
 @Composable
-fun MainAppStructure() {
-    val navController = rememberNavController()
-
-    // We use this to check which screen is currently visible
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
-    val currentRoute = currentDestination?.route
-
-    // Define the items for the Bottom Bar
-    val items = listOf("Home", "Cart", "Favorites", "Profile")
-    val icons = listOf(Icons.Default.Home, Icons.Default.ShoppingCart, Icons.Default.Favorite, Icons.Default.Person)
+fun GroceryApp() {
+    var currentScreen by rememberSaveable { mutableStateOf(Screen.WELCOME) }
 
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            // ONLY show the bottom bar if we are NOT on the Welcome screen
-            if (currentRoute != "Welcome") {
-                NavigationBar {
-                    items.forEachIndexed { index, screen ->
-                        NavigationBarItem(
-                            icon = { Icon(icons[index], contentDescription = screen) },
-                            label = { Text(screen) },
-                            selected = currentDestination?.hierarchy?.any { it.route == screen } == true,
-                            onClick = {
-                                navController.navigate(screen) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        )
-                    }
-                }
+            if (currentScreen != Screen.WELCOME) {
+                BottomBar(
+                    currentScreen = currentScreen,
+                    onScreenSelected = { currentScreen = it }
+                )
             }
         }
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = "Welcome", // Start at Welcome Screen
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            // 1. Welcome Screen Route
-            composable("Welcome") {
+
+        when (currentScreen) {
+            Screen.WELCOME -> {
                 WelcomeScreen(
+                    modifier = Modifier.padding(innerPadding),
                     onHomeClicked = {
-                        // When button clicked, go to Home and clear Welcome from history
-                        navController.navigate("Home") {
-                            popUpTo("Welcome") { inclusive = true }
-                        }
+                        currentScreen = Screen.HOME
                     }
                 )
             }
 
-            // 2. Home Screen Route
-            composable("Home") {
-                HomeScreen()
+            Screen.HOME -> {
+                HomeScreen(
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
 
-            // 3. Placeholders for other screens (we will build these later)
-            composable("Cart") { Text(text = "Cart Page", modifier = Modifier.padding(16.dp)) }
-            composable("Favorites") { Text(text = "Favorites Page", modifier = Modifier.padding(16.dp)) }
-            composable("Profile") { Text(text = "Profile Page", modifier = Modifier.padding(16.dp)) }
+            Screen.PROFILE -> {
+                // ProfileScreen()
+            }
+
+            Screen.FAVORITES -> {
+                // FavoritesScreen()
+            }
+
+            Screen.SHOPPING_LIST -> {
+                // ShoppingListScreen()
+            }
+
+            Screen.PRODUCT_DETAILS -> {
+                // ProductDetailsScreen()
+            }
         }
     }
 }

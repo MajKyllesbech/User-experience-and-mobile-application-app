@@ -1,272 +1,204 @@
 package com.example.apptest
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.AddShoppingCart
+import androidx.compose.material.icons.filled.BakeryDining
+import androidx.compose.material.icons.filled.Egg
+import androidx.compose.material.icons.filled.Grass
+import androidx.compose.material.icons.filled.KebabDining
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.apptest.ui.theme.AppTestTheme
 
-// Define specific colors from your Figma (approximate)
-val BadgeYellow = Color(0xFFFDD835)
-val BadgeGreen = Color(0xFF4CAF50)
-val PriceBlack = Color(0xFF1E1E1E)
-
+/**
+ * This is the Home Screen.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
+
     var searchText by rememberSaveable { mutableStateOf("") }
 
-    // Split data: 1 big offer item, and the rest for the grid
-    val offerItem = mockGroceryList.firstOrNull() // The Milk
-    val suggestedItems = mockGroceryList.drop(1)  // The rest (Chips, Carrots, etc.)
+    // We use the mock list from our new 'GroceryData.kt' file
+    val filteredItems = mockGroceryList.filter {
+        it.name.contains(searchText, ignoreCase = true)
+    }
 
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(horizontal = 16.dp)
     ) {
-        // 1. Header & Search
+        // "Hello" Greeting
         item {
             Spacer(Modifier.height(16.dp))
             Text(
-                text = "Dagligvarer", // Danish for "Groceries"
-                style = MaterialTheme.typography.headlineMedium,
+                text = "Hej, bruger!",
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(16.dp))
+        }
 
-            // Search Bar
+        // Search Bar
+        item {
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { searchText = it },
-                placeholder = { Text("Søg") }, // "Search"
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                trailingIcon = { Icon(Icons.Default.Tune, contentDescription = "Filter") }, // Filter sliders
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = Color(0xFFF5F5F5),
-                    focusedContainerColor = Color.White,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary
-                )
+                label = { Text("Søg efter fødevarer...") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp)
             )
+            Spacer(Modifier.height(24.dp))
         }
 
-        // 2. "Tilbud" (Offer) Section
+        // Categories
         item {
-            SectionHeader(title = "Tilbud", actionText = "Se alt") // "Offer", "See all"
-
-            if (offerItem != null) {
-                BigOfferCard(item = offerItem)
-            }
-        }
-
-        // 3. "Forslået" (Suggested) Section - Grid of 2 columns
-        item {
-            SectionHeader(title = "Forslået", actionText = "")
-        }
-
-        // We create rows of 2 items each manually since we are inside a LazyColumn
-        items(suggestedItems.chunked(2)) { rowItems ->
+            Text(
+                text = "Kategorier",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(Modifier.height(16.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.SpaceAround
             ) {
-                rowItems.forEach { item ->
-                    GridGroceryCard(
-                        item = item,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-                // If a row has only 1 item, add a spacer to keep alignment
-                if (rowItems.size == 1) {
-                    Spacer(Modifier.weight(1f))
-                }
+                CategoryItem(icon = Icons.Default.Grass, label = "Produce")
+                CategoryItem(icon = Icons.Default.Egg, label = "Dairy")
+                CategoryItem(icon = Icons.Default.KebabDining, label = "Meat")
+                CategoryItem(icon = Icons.Default.BakeryDining, label = "Bakery")
             }
+            Spacer(Modifier.height(24.dp))
         }
 
-        item { Spacer(Modifier.height(80.dp)) } // Bottom spacing for navigation bar
+        // Popular Items title
+        item {
+            Text(
+                text = "Populære varer",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(Modifier.height(16.dp))
+        }
+
+        // List of Grocery Items
+        items(filteredItems) { item ->
+            GroceryItemCard(
+                item = item,
+                onActionClick = {
+                    // This button doesn't do anything yet
+                },
+                actionIcon = Icons.Default.AddShoppingCart,
+                actionDescription = "Add to list"
+            )
+            Spacer(Modifier.height(8.dp))
+        }
+
+        item {
+            Spacer(Modifier.height(16.dp)) // Add space at the bottom
+        }
     }
 }
 
-// --- Component: Big Offer Card (Like the Milk in Figma) ---
+
+// --- Reusable Composables ---
+
 @Composable
-fun BigOfferCard(item: GroceryItem) {
+fun CategoryItem(icon: ImageVector, label: String, modifier: Modifier = Modifier) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(text = label, style = MaterialTheme.typography.labelSmall)
+    }
+}
+
+@Composable
+fun GroceryItemCard(
+    item: GroceryItem,
+    onActionClick: () -> Unit,
+    actionIcon: ImageVector,
+    actionDescription: String,
+    modifier: Modifier = Modifier
+) {
     Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        modifier = Modifier.fillMaxWidth().height(320.dp)
+        modifier = modifier.fillMaxWidth()
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            // Placeholder for Image (Replace with actual Image composable when you have assets)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .background(Color(0xFFE0E0E0)), // Grey placeholder
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(Icons.Default.Image, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(64.dp))
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(text = item.name, fontWeight = FontWeight.Bold)
+                Text(text = item.category, style = MaterialTheme.typography.bodySmall)
             }
-
-            // "Tilbud" Badge
-            Surface(
-                color = BadgeYellow,
-                shape = RoundedCornerShape(4.dp),
-                modifier = Modifier.padding(16.dp).align(Alignment.TopStart)
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "TILBUD",
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
+                    text = "$${item.price}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(end = 8.dp)
                 )
-            }
-
-            // Heart Icon
-            IconButton(
-                onClick = {},
-                modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
-            ) {
-                Icon(Icons.Default.FavoriteBorder, contentDescription = "Favorite", tint = Color.Gray)
-            }
-
-            // Eco Badge (Floating near bottom of image)
-            Surface(
-                color = BadgeGreen,
-                shape = CircleShape,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(start = 16.dp, top = 180.dp) // Position it overlapping image/text
-            ) {
-                Text(
-                    text = "Øko",
-                    color = Color.White,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                    fontSize = 12.sp
-                )
-            }
-
-            // Info Section
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = item.name, // e.g. "Arla - Minimælk"
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Økologisk", // "Organic"
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
-                )
-                Spacer(Modifier.height(8.dp))
-
-                // Price Pill
-                Surface(
-                    color = PriceBlack,
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text(
-                        text = "${item.price} kr",
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        fontWeight = FontWeight.Bold
-                    )
+                IconButton(onClick = onActionClick) {
+                    Icon(actionIcon, contentDescription = actionDescription)
                 }
             }
         }
     }
 }
 
-// --- Component: Smaller Grid Card ---
+
+// --- Preview ---
+@Preview(showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
-fun GridGroceryCard(item: GroceryItem, modifier: Modifier = Modifier) {
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        modifier = modifier.height(200.dp)
-    ) {
-        Column {
-            // Image Placeholder
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .background(Color(0xFFEEEEEE)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(Icons.Default.ShoppingBag, contentDescription = null, tint = Color.LightGray)
-
-                // Price Badge
-                Surface(
-                    color = PriceBlack.copy(alpha = 0.8f),
-                    shape = RoundedCornerShape(topStart = 8.dp),
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                ) {
-                    Text(
-                        text = "${item.price} kr",
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        fontSize = 12.sp
-                    )
-                }
-            }
-
-            Column(modifier = Modifier.padding(12.dp)) {
-                Text(
-                    text = item.name,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1
-                )
-                Text(
-                    text = item.category,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun SectionHeader(title: String, actionText: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        if (actionText.isNotEmpty()) {
-            Text(text = actionText, color = MaterialTheme.colorScheme.primary, fontSize = 14.sp)
-        }
+fun HomeScreenPreview() {
+    AppTestTheme {
+        HomeScreen()
     }
 }
