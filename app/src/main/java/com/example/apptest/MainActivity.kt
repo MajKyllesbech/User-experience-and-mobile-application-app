@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.apptest.ui.theme.AppTestTheme
 import com.example.apptest.BottomBar
+import androidx.compose.runtime.mutableStateListOf
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +48,11 @@ enum class Screen {
 fun GroceryApp() {
     var currentScreen by rememberSaveable { mutableStateOf(Screen.WELCOME) }
 
+    val shoppingList = rememberSaveable {
+        mutableStateListOf<GroceryItem>()
+    }
+
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -71,7 +77,10 @@ fun GroceryApp() {
 
             Screen.HOME -> {
                 HomeScreen(
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.padding(innerPadding),
+                    onAddToShoppingList = { item ->
+                        shoppingList.add(item)
+                    }
                 )
             }
 
@@ -84,7 +93,12 @@ fun GroceryApp() {
             }
 
             Screen.SHOPPING_LIST -> {
-                // ShoppingListScreen()
+                ShoppingListScreen(
+                    shoppingList = shoppingList,
+                    onRemoveItem = { item ->
+                        shoppingList.remove(item)
+                    }
+                )
             }
 
             Screen.PRODUCT_DETAILS -> {

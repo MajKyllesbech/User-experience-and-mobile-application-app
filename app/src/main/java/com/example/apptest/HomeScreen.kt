@@ -44,7 +44,10 @@ import com.example.apptest.ui.theme.AppTestTheme
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    onAddToShoppingList: (GroceryItem) -> Unit
+) {
 
     var searchText by rememberSaveable { mutableStateOf("") }
 
@@ -117,7 +120,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             GroceryItemCard(
                 item = item,
                 onActionClick = {
-                    // This button doesn't do anything yet
+                    onAddToShoppingList(item)
                 },
                 actionIcon = Icons.Default.AddShoppingCart,
                 actionDescription = "Add to list"
@@ -199,6 +202,6 @@ fun GroceryItemCard(
 @Composable
 fun HomeScreenPreview() {
     AppTestTheme {
-        HomeScreen()
+        HomeScreen(onAddToShoppingList = {})
     }
 }
