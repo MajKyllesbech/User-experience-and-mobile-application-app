@@ -76,7 +76,9 @@ fun GroceryApp() {
             }
 
             Screen.PROFILE -> {
-                // ProfileScreen()
+                ProfileScreen(
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
 
             Screen.FAVORITES -> {
