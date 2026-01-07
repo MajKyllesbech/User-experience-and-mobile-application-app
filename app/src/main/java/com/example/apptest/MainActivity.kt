@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import com.example.apptest.ui.theme.AppTestTheme
 import com.example.apptest.BottomBar
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +49,7 @@ enum class Screen {
 fun GroceryApp() {
     var currentScreen by rememberSaveable { mutableStateOf(Screen.WELCOME) }
 
-    val shoppingList = rememberSaveable {
+    val shoppingList = remember {
         mutableStateListOf<GroceryItem>()
     }
 
