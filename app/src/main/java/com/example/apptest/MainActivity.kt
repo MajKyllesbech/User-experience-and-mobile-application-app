@@ -92,7 +92,7 @@ fun GroceryApp() {
             }
 
             Screen.FAVORITES -> {
-                // FavoritesScreen()
+                FavoritesScreen(modifier = Modifier.padding(innerPadding))
             }
 
             Screen.SHOPPING_LIST -> {

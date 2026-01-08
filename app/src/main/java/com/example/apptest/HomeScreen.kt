@@ -38,6 +38,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.apptest.ui.theme.AppTestTheme
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material.icons.filled.ShoppingBag
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
 
 /**
  * This is the Home Screen.
@@ -203,5 +208,65 @@ fun GroceryItemCard(
 fun HomeScreenPreview() {
     AppTestTheme {
         HomeScreen(onAddToShoppingList = {})
+    }
+}
+@Composable
+fun GridGroceryCard(
+    item: GroceryItem,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        modifier = modifier.height(200.dp)
+    ) {
+        Column {
+            // Image Placeholder area
+            // "Box" is now used correctly here, so the import at the top will stop being gray
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .background(Color(0xFFEEEEEE)),
+                contentAlignment = Alignment.Center
+            ) {
+                // "ShoppingBag" is now recognized because of the new import
+                Icon(
+                    Icons.Default.ShoppingBag,
+                    contentDescription = null,
+                    tint = Color.LightGray
+                )
+
+                // Price Badge
+                // If you get an error here, ensure 'Surface' import is present or use androidx.compose.material3.Surface
+                androidx.compose.material3.Surface(
+                    color = Color(0xFF1E1E1E).copy(alpha = 0.8f),
+                    shape = RoundedCornerShape(topStart = 8.dp),
+                    modifier = Modifier.align(Alignment.BottomEnd)
+                ) {
+                    Text(
+                        text = "${item.price} kr",
+                        color = Color.White,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        fontSize = 12.sp
+                    )
+                }
+            }
+
+            // Info area
+            Column(modifier = Modifier.padding(12.dp)) {
+                Text(
+                    text = item.name,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
+                )
+                Text(
+                    text = item.category,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+            }
+        }
     }
 }

@@ -1,5 +1,4 @@
 package com.example.apptest
-//package com.example.apptest.ui.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -11,8 +10,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.example.apptest.Screen
-
 
 @Composable
 fun BottomBar(
@@ -20,29 +17,36 @@ fun BottomBar(
     onScreenSelected: (Screen) -> Unit
 ) {
     NavigationBar {
+        // Home Button
         NavigationBarItem(
+            icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
+            label = { Text("Home") },
             selected = currentScreen == Screen.HOME,
-            onClick = { onScreenSelected(Screen.HOME) },
-            icon = { Icon(Icons.Default.Home, null) },
-            label = { Text("Hjem") }
+            onClick = { onScreenSelected(Screen.HOME) }
         )
+
+        // Cart Button
         NavigationBarItem(
-            selected = currentScreen == Screen.FAVORITES,
-            onClick = { onScreenSelected(Screen.FAVORITES) },
-            icon = { Icon(Icons.Default.Favorite, null) },
-            label = { Text("Favoritter") }
-        )
-        NavigationBarItem(
+            icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Cart") },
+            label = { Text("Cart") },
             selected = currentScreen == Screen.SHOPPING_LIST,
-            onClick = { onScreenSelected(Screen.SHOPPING_LIST) },
-            icon = { Icon(Icons.Default.ShoppingCart,null) },
-            label = { Text("Indkøbsliste") }
+            onClick = { onScreenSelected(Screen.SHOPPING_LIST) }
         )
+
+        // Favorites Button
         NavigationBarItem(
+            icon = { Icon(Icons.Default.Favorite, contentDescription = "Favorites") },
+            label = { Text("Favorites") },
+            selected = currentScreen == Screen.FAVORITES,
+            onClick = { onScreenSelected(Screen.FAVORITES) }
+        )
+
+        // Profile Button
+        NavigationBarItem(
+            icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
+            label = { Text("Profile") },
             selected = currentScreen == Screen.PROFILE,
-            onClick = { onScreenSelected(Screen.PROFILE) },
-            icon = { Icon(Icons.Default.Person, null) },
-            label = { Text("Profil") }
+            onClick = { onScreenSelected(Screen.PROFILE) }
         )
     }
 }
