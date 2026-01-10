@@ -46,7 +46,8 @@ import com.example.apptest.ui.theme.AppTestTheme
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onAddToShoppingList: (GroceryItem) -> Unit
+    onAddToShoppingList: (GroceryItem) -> Unit,
+    onItemClicked: (GroceryItem) -> Unit
 ) {
 
     var searchText by rememberSaveable { mutableStateOf("") }
@@ -119,11 +120,10 @@ fun HomeScreen(
         items(filteredItems) { item ->
             GroceryItemCard(
                 item = item,
-                onActionClick = {
-                    onAddToShoppingList(item)
-                },
+                onActionClick = { onAddToShoppingList(item) },
                 actionIcon = Icons.Default.AddShoppingCart,
-                actionDescription = "Add to list"
+                actionDescription = "Tilføj",
+                onCardClick = { onItemClicked(item) }
             )
             Spacer(Modifier.height(8.dp))
         }
@@ -166,28 +166,25 @@ fun GroceryItemCard(
     onActionClick: () -> Unit,
     actionIcon: ImageVector,
     actionDescription: String,
-    modifier: Modifier = Modifier
+    onCardClick: () -> Unit
 ) {
     Card(
-        modifier = modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        onClick = onCardClick
     ) {
         Row(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(text = item.name, fontWeight = FontWeight.Bold)
-                Text(text = item.category, style = MaterialTheme.typography.bodySmall)
+                Text(item.name, fontWeight = FontWeight.Bold)
+                Text(item.category, style = MaterialTheme.typography.bodySmall)
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "$${item.price}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
+                Text("${item.price} kr", modifier = Modifier.padding(end = 8.dp))
                 IconButton(onClick = onActionClick) {
                     Icon(actionIcon, contentDescription = actionDescription)
                 }
@@ -196,12 +193,14 @@ fun GroceryItemCard(
     }
 }
 
-
 // --- Preview ---
 @Preview(showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 fun HomeScreenPreview() {
     AppTestTheme {
-        HomeScreen(onAddToShoppingList = {})
+        HomeScreen(
+            onAddToShoppingList = {},
+            onItemClicked = {}
+        )
     }
 }
