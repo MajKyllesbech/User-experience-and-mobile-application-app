@@ -47,11 +47,12 @@ enum class Screen {
  */
 @Composable
 fun GroceryApp() {
+
     var currentScreen by rememberSaveable { mutableStateOf(Screen.WELCOME) }
 
     var selectedProduct by rememberSaveable { mutableStateOf<GroceryItem?>(null) }
 
-    val favorites = rememberSaveable { mutableStateListOf<Int>() }
+    val favorites = remember { mutableStateListOf<Int>() }
 
 
     val shoppingList = remember {
