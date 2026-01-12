@@ -49,6 +49,11 @@ enum class Screen {
 fun GroceryApp() {
     var currentScreen by rememberSaveable { mutableStateOf(Screen.WELCOME) }
 
+    var selectedProduct by rememberSaveable { mutableStateOf<GroceryItem?>(null) }
+
+    val favorites = rememberSaveable { mutableStateListOf<Int>() }
+
+
     val shoppingList = remember {
         mutableStateListOf<GroceryItem>()
     }
@@ -81,9 +86,14 @@ fun GroceryApp() {
                     modifier = Modifier.padding(innerPadding),
                     onAddToShoppingList = { item ->
                         shoppingList.add(item)
+                    },
+                    onItemClicked = { item ->
+                        selectedProduct = item
+                        currentScreen = Screen.PRODUCT_DETAILS
                     }
                 )
             }
+
 
             Screen.PROFILE -> {
                 ProfileScreen(
@@ -105,8 +115,28 @@ fun GroceryApp() {
             }
 
             Screen.PRODUCT_DETAILS -> {
-                // ProductDetailsScreen()
+                selectedProduct?.let { product ->
+                    ProductDetailsScreen(
+                        item = product,
+                        isFavorite = product.id in favorites,
+                        onToggleFavorite = {
+                            if (product.id in favorites) {
+                                favorites.remove(product.id)
+                            } else {
+                                favorites.add(product.id)
+                            }
+                        },
+                        onAddToShoppingList = {
+                            shoppingList.add(product)
+                        },
+                        onBack = {
+                            currentScreen = Screen.HOME
+                        }
+                    )
+                }
             }
+
+
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.apptest
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -51,7 +52,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onAddToShoppingList: (GroceryItem) -> Unit
+    onAddToShoppingList: (GroceryItem) -> Unit,
+    onItemClicked: (GroceryItem) -> Unit
 ) {
 
     var searchText by rememberSaveable { mutableStateOf("") }
@@ -124,11 +126,10 @@ fun HomeScreen(
         items(filteredItems) { item ->
             GroceryItemCard(
                 item = item,
-                onActionClick = {
-                    onAddToShoppingList(item)
-                },
+                onActionClick = { onAddToShoppingList(item) },
                 actionIcon = Icons.Default.AddShoppingCart,
-                actionDescription = "Add to list"
+                actionDescription = "Tilføj",
+                onCardClick = { onItemClicked(item) }
             )
             Spacer(Modifier.height(8.dp))
         }
@@ -168,13 +169,16 @@ fun CategoryItem(icon: ImageVector, label: String, modifier: Modifier = Modifier
 @Composable
 fun GroceryItemCard(
     item: GroceryItem,
+    onCardClick: () -> Unit,
     onActionClick: () -> Unit,
     actionIcon: ImageVector,
     actionDescription: String,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onCardClick() }
     ) {
         Row(
             modifier = Modifier
@@ -185,7 +189,10 @@ fun GroceryItemCard(
         ) {
             Column {
                 Text(text = item.name, fontWeight = FontWeight.Bold)
-                Text(text = item.category, style = MaterialTheme.typography.bodySmall)
+                Text(
+                    text = item.category,
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -207,7 +214,10 @@ fun GroceryItemCard(
 @Composable
 fun HomeScreenPreview() {
     AppTestTheme {
-        HomeScreen(onAddToShoppingList = {})
+        HomeScreen(
+            onAddToShoppingList = {},
+            onItemClicked = {}
+        )
     }
 }
 @Composable
