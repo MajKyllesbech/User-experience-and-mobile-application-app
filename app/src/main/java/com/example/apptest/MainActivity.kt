@@ -51,6 +51,8 @@ fun GroceryApp() {
 
     var selectedProduct by rememberSaveable { mutableStateOf<GroceryItem?>(null) }
 
+    val favorites = rememberSaveable { mutableStateListOf<Int>() }
+
 
     val shoppingList = remember {
         mutableStateListOf<GroceryItem>()
@@ -116,6 +118,14 @@ fun GroceryApp() {
                 selectedProduct?.let { product ->
                     ProductDetailsScreen(
                         item = product,
+                        isFavorite = product.id in favorites,
+                        onToggleFavorite = {
+                            if (product.id in favorites) {
+                                favorites.remove(product.id)
+                            } else {
+                                favorites.add(product.id)
+                            }
+                        },
                         onAddToShoppingList = {
                             shoppingList.add(product)
                         },
@@ -125,6 +135,7 @@ fun GroceryApp() {
                     )
                 }
             }
+
 
         }
     }

@@ -1,5 +1,6 @@
 package com.example.apptest
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -163,28 +164,37 @@ fun CategoryItem(icon: ImageVector, label: String, modifier: Modifier = Modifier
 @Composable
 fun GroceryItemCard(
     item: GroceryItem,
+    onCardClick: () -> Unit,
     onActionClick: () -> Unit,
     actionIcon: ImageVector,
     actionDescription: String,
-    onCardClick: () -> Unit
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        onClick = onCardClick
+            .clickable { onCardClick() }
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
-                Text(item.name, fontWeight = FontWeight.Bold)
-                Text(item.category, style = MaterialTheme.typography.bodySmall)
+                Text(text = item.name, fontWeight = FontWeight.Bold)
+                Text(
+                    text = item.category,
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("${item.price} kr", modifier = Modifier.padding(end = 8.dp))
+                Text(
+                    text = "$${item.price}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
                 IconButton(onClick = onActionClick) {
                     Icon(actionIcon, contentDescription = actionDescription)
                 }
@@ -192,6 +202,7 @@ fun GroceryItemCard(
         }
     }
 }
+
 
 // --- Preview ---
 @Preview(showBackground = true, widthDp = 360, heightDp = 800)
