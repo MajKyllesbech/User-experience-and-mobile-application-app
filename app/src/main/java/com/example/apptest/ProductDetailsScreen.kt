@@ -15,17 +15,40 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 @Composable
 fun ProductDetailsScreen(
     item: GroceryItem,
-    isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
     onAddToShoppingList: () -> Unit,
     onBack: () -> Unit
 ) {
-    Column {
-        Text(item.name)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = item.name,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        Text(
+            text = "${item.price} kr",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        Text(
+            text = item.description,
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Spacer(Modifier.height(24.dp))
 
         IconButton(onClick = onToggleFavorite) {
             Icon(
-                imageVector = if (isFavorite)
+                imageVector = if (item.isFavorite)
                     Icons.Filled.Favorite
                 else
                     Icons.Outlined.FavoriteBorder,
@@ -33,11 +56,21 @@ fun ProductDetailsScreen(
             )
         }
 
-        Button(onClick = onAddToShoppingList) {
+        Spacer(Modifier.height(16.dp))
+
+        Button(
+            onClick = onAddToShoppingList,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Tilføj til indkøbsliste")
         }
 
-        Button(onClick = onBack) {
+        Spacer(Modifier.height(8.dp))
+
+        OutlinedButton(
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Tilbage")
         }
     }

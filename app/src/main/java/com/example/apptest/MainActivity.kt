@@ -119,16 +119,13 @@ fun GroceryApp() {
                 selectedProduct?.let { product ->
                     ProductDetailsScreen(
                         item = product,
-                        isFavorite = product.id in favorites,
-                        onToggleFavorite = {
-                            if (product.id in favorites) {
-                                favorites.remove(product.id)
-                            } else {
-                                favorites.add(product.id)
-                            }
-                        },
                         onAddToShoppingList = {
                             shoppingList.add(product)
+                        },
+                        onToggleFavorite = {
+                            selectedProduct = product.copy(
+                                isFavorite = !product.isFavorite
+                            )
                         },
                         onBack = {
                             currentScreen = Screen.HOME
@@ -136,6 +133,7 @@ fun GroceryApp() {
                     )
                 }
             }
+
 
 
         }
