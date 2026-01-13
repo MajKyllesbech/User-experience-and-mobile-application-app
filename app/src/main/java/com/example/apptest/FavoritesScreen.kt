@@ -14,19 +14,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
-    favorites: List<GroceryItem>,
-    onItemClicked: (GroceryItem) -> Unit
+    favoriteItems: List<GroceryItem>,
+    onRemoveItem: (GroceryItem) -> Unit, // <--- 1. Receive the remove action
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color(0xFFF8F9FA))
             .padding(horizontal = 16.dp)
     ) {
+        // Header
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Mine Favoritter",
@@ -35,11 +36,9 @@ fun FavoritesScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (favorites.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
+        if (favoriteItems.isEmpty()) {
+            // Empty State
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(
                         Icons.Default.Favorite,
@@ -52,10 +51,11 @@ fun FavoritesScreen(
                 }
             }
         } else {
+            // Grid of Favorites
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(favorites.chunked(2)) { rowItems ->
+                items(favoriteItems.chunked(2)) { rowItems ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -63,8 +63,9 @@ fun FavoritesScreen(
                         rowItems.forEach { item ->
                             GridGroceryCard(
                                 item = item,
-                                modifier = Modifier.weight(1f),
-                                onClick = { onItemClicked(item) }
+                                // 2. Pass the remove action to the card
+                                onDeleteClick = { onRemoveItem(item) },
+                                modifier = Modifier.weight(1f)
                             )
                         }
                         if (rowItems.size == 1) {

@@ -17,6 +17,8 @@ import com.example.apptest.ui.theme.AppTestTheme
 import com.example.apptest.BottomBar
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.toMutableStateList
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +54,15 @@ fun GroceryApp() {
 
     var selectedProduct by rememberSaveable { mutableStateOf<GroceryItem?>(null) }
 
-    val favorites = remember { mutableStateListOf<Int>() }
+    // This list holds the IDs of the items we like
+    val favorites = rememberSaveable(
+        saver = listSaver(
+            save = { stateList -> stateList.toList() },
+            restore = { it.toMutableStateList() }
+        )
+    ) {
+        mutableStateListOf<Int>()
+    }
 
 
     val shoppingList = remember {
@@ -89,8 +99,20 @@ fun GroceryApp() {
                         shoppingList.add(item)
                     },
                     onItemClicked = { item ->
-                        selectedProduct = item
+                        // Pass the favorite state to the details screen so the heart is correct there too
+                        val isFav = favorites.contains(item.id)
+                        selectedProduct = item.copy(isFavorite = isFav)
                         currentScreen = Screen.PRODUCT_DETAILS
+                    },
+                    // 1. Pass the List of IDs
+                    favoriteIds = favorites,
+                    // 2. Define logic: Add or Remove from the list
+                    onToggleFavorite = { item ->
+                        if (favorites.contains(item.id)) {
+                            favorites.remove(item.id)
+                        } else {
+                            favorites.add(item.id)
+                        }
                     }
                 )
             }
@@ -103,15 +125,18 @@ fun GroceryApp() {
             }
 
             Screen.FAVORITES -> {
+                // Filter the list to find favorite objects
+                val myFavoriteItems = mockGroceryList.filter { favorites.contains(it.id) }
+
                 FavoritesScreen(
-                    favorites = mockGroceryList.filter { it.isFavorite },
-                    onItemClicked = { item ->
-                        selectedProduct = item
-                        currentScreen = Screen.PRODUCT_DETAILS
-                    }
+                    favoriteItems = myFavoriteItems,
+                    // 1. Define what happens when delete is clicked:
+                    onRemoveItem = { itemToRemove ->
+                        favorites.remove(itemToRemove.id)
+                    },
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
-
 
             Screen.SHOPPING_LIST -> {
                 ShoppingListScreen(
@@ -126,20 +151,23 @@ fun GroceryApp() {
                 selectedProduct?.let { product ->
                     ProductDetailsScreen(
                         item = product,
-                        onAddToShoppingList = {
-                            shoppingList.add(product)
-                        },
+                        onAddToShoppingList = { shoppingList.add(product) },
                         onToggleFavorite = {
-                            selectedProduct = product.copy(
-                                isFavorite = !product.isFavorite
-                            )
+                            // 3. LOGIC: Actually add or remove the ID from the list
+                            if (favorites.contains(product.id)) {
+                                favorites.remove(product.id)
+                                selectedProduct = product.copy(isFavorite = false)
+                            } else {
+                                favorites.add(product.id)
+                                selectedProduct = product.copy(isFavorite = true)
+                            }
                         },
-                        onBack = {
-                            currentScreen = Screen.HOME
-                        }
-                    )
+                        onBack = { currentScreen = Screen.HOME })
                 }
             }
+
+
+
         }
     }
 }

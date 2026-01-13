@@ -1,65 +1,39 @@
 package com.example.apptest
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddShoppingCart
-import androidx.compose.material.icons.filled.BakeryDining
-import androidx.compose.material.icons.filled.Egg
-import androidx.compose.material.icons.filled.Grass
-import androidx.compose.material.icons.filled.KebabDining
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.apptest.ui.theme.AppTestTheme
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.material.icons.filled.ShoppingBag
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
-import androidx.compose.material3.Surface
+import com.example.apptest.ui.theme.AppTestTheme
+import androidx.compose.material.icons.filled.Delete
 
-/**
- * This is the Home Screen.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onAddToShoppingList: (GroceryItem) -> Unit,
-    onItemClicked: (GroceryItem) -> Unit
+    onItemClicked: (GroceryItem) -> Unit,
+    favoriteIds: List<Int>,              // <--- 1. Receive the list of favorite IDs
+    onToggleFavorite: (GroceryItem) -> Unit // <--- 2. Receive the toggle action
 ) {
 
     var searchText by rememberSaveable { mutableStateOf("") }
 
-    // We use the mock list from our new 'GroceryData.kt' file
     val filteredItems = mockGroceryList.filter {
         it.name.contains(searchText, ignoreCase = true)
     }
@@ -125,18 +99,21 @@ fun HomeScreen(
 
         // List of Grocery Items
         items(filteredItems) { item ->
+            // 3. Determine if this specific item is a favorite
+            val isFavorite = favoriteIds.contains(item.id)
+
             GroceryItemCard(
                 item = item,
-                onActionClick = { onAddToShoppingList(item) },
-                actionIcon = Icons.Default.AddShoppingCart,
-                actionDescription = "Tilføj",
+                isFavorite = isFavorite, // <--- Pass the state
+                onToggleFavorite = { onToggleFavorite(item) }, // <--- Pass the action
+                onAddToShoppingList = { onAddToShoppingList(item) },
                 onCardClick = { onItemClicked(item) }
             )
             Spacer(Modifier.height(8.dp))
         }
 
         item {
-            Spacer(Modifier.height(16.dp)) // Add space at the bottom
+            Spacer(Modifier.height(16.dp))
         }
     }
 }
@@ -170,10 +147,10 @@ fun CategoryItem(icon: ImageVector, label: String, modifier: Modifier = Modifier
 @Composable
 fun GroceryItemCard(
     item: GroceryItem,
+    isFavorite: Boolean,            // <--- New parameter
+    onToggleFavorite: () -> Unit,   // <--- New parameter
+    onAddToShoppingList: () -> Unit,
     onCardClick: () -> Unit,
-    onActionClick: () -> Unit,
-    actionIcon: ImageVector,
-    actionDescription: String,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -195,47 +172,61 @@ fun GroceryItemCard(
                     style = MaterialTheme.typography.bodySmall
                 )
             }
+            // Right side: Price + Buttons
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "$${item.price}",
+                    text = "${item.price} kr",
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(end = 8.dp)
                 )
-                IconButton(onClick = onActionClick) {
-                    Icon(actionIcon, contentDescription = actionDescription)
+
+                // --- HEART BUTTON ---
+                IconButton(onClick = onToggleFavorite) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Favorit",
+                        tint = if (isFavorite) Color.Red else Color.Gray
+                    )
+                }
+
+                // --- CART BUTTON ---
+                IconButton(onClick = onAddToShoppingList) {
+                    Icon(Icons.Default.AddShoppingCart, contentDescription = "Læg i kurv")
                 }
             }
         }
     }
 }
 
-
-// --- Preview ---
+// Preview
 @Preview(showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 fun HomeScreenPreview() {
     AppTestTheme {
         HomeScreen(
             onAddToShoppingList = {},
-            onItemClicked = {}
+            onItemClicked = {},
+            favoriteIds = listOf(1), // Preview with item 1 selected
+            onToggleFavorite = {}
         )
     }
 }
+
+// Used for Favorites Screen (kept as is)
 @Composable
 fun GridGroceryCard(
     item: GroceryItem,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onDeleteClick: (() -> Unit)? = null, // <--- 1. We add this optional delete action
+    modifier: Modifier = Modifier
 ) {
     Card(
-        onClick = onClick,
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = modifier.height(200.dp)
     ) {
         Column {
-            // Image placeholder
+            // Image / Icon Area
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -243,14 +234,32 @@ fun GridGroceryCard(
                     .background(Color(0xFFEEEEEE)),
                 contentAlignment = Alignment.Center
             ) {
+                // The Shopping Bag Icon
                 Icon(
                     Icons.Default.ShoppingBag,
                     contentDescription = null,
                     tint = Color.LightGray
                 )
 
-                // Price badge
-                Surface(
+                // 2. THE TRASH CAN BUTTON
+                // We only show it if an onDeleteClick function is provided (like in Favorites)
+                if (onDeleteClick != null) {
+                    IconButton(
+                        onClick = onDeleteClick,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd) // Place it in top right corner
+                            .padding(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Slet",
+                            tint = Color.Red
+                        )
+                    }
+                }
+
+                // Price Badge
+                androidx.compose.material3.Surface(
                     color = Color(0xFF1E1E1E).copy(alpha = 0.8f),
                     shape = RoundedCornerShape(topStart = 8.dp),
                     modifier = Modifier.align(Alignment.BottomEnd)
@@ -264,7 +273,7 @@ fun GridGroceryCard(
                 }
             }
 
-            // Info
+            // Info area
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(
                     text = item.name,
