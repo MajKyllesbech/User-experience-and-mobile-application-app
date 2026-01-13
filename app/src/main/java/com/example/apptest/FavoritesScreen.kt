@@ -13,23 +13,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoritesScreen(modifier: Modifier = Modifier) {
-    // For now, let's just pretend the user has favorited the first 4 items
-    // Later we will make this real!
-    val favoriteItems = mockGroceryList.take(4)
-
+fun FavoritesScreen(
+    favorites: List<GroceryItem>,
+    onItemClicked: (GroceryItem) -> Unit
+) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F9FA)) // Light background
+            .background(Color(0xFFF8F9FA))
             .padding(horizontal = 16.dp)
     ) {
-        // Header
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Mine Favoritter",
@@ -38,9 +35,11 @@ fun FavoritesScreen(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (favoriteItems.isEmpty()) {
-            // Empty State (Show this if no favorites)
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        if (favorites.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(
                         Icons.Default.Favorite,
@@ -53,30 +52,27 @@ fun FavoritesScreen(modifier: Modifier = Modifier) {
                 }
             }
         } else {
-            // Grid of Favorites
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(favoriteItems.chunked(2)) { rowItems ->
+                items(favorites.chunked(2)) { rowItems ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         rowItems.forEach { item ->
-                            // We reuse the GridCard from HomeScreen!
-                            // Make sure GridGroceryCard is "public" in HomeScreen.kt
                             GridGroceryCard(
                                 item = item,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                onClick = { onItemClicked(item) }
                             )
                         }
-                        // Spacer for odd-numbered rows
                         if (rowItems.size == 1) {
                             Spacer(Modifier.weight(1f))
                         }
                     }
                 }
-                item { Spacer(modifier = Modifier.height(80.dp)) } // Space for bottom bar
+                item { Spacer(modifier = Modifier.height(80.dp)) }
             }
         }
     }

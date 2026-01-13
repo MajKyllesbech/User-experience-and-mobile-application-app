@@ -44,6 +44,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import androidx.compose.material3.Surface
 
 /**
  * This is the Home Screen.
@@ -223,17 +224,18 @@ fun HomeScreenPreview() {
 @Composable
 fun GridGroceryCard(
     item: GroceryItem,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     Card(
+        onClick = onClick,
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = modifier.height(200.dp)
     ) {
         Column {
-            // Image Placeholder area
-            // "Box" is now used correctly here, so the import at the top will stop being gray
+            // Image placeholder
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -241,16 +243,14 @@ fun GridGroceryCard(
                     .background(Color(0xFFEEEEEE)),
                 contentAlignment = Alignment.Center
             ) {
-                // "ShoppingBag" is now recognized because of the new import
                 Icon(
                     Icons.Default.ShoppingBag,
                     contentDescription = null,
                     tint = Color.LightGray
                 )
 
-                // Price Badge
-                // If you get an error here, ensure 'Surface' import is present or use androidx.compose.material3.Surface
-                androidx.compose.material3.Surface(
+                // Price badge
+                Surface(
                     color = Color(0xFF1E1E1E).copy(alpha = 0.8f),
                     shape = RoundedCornerShape(topStart = 8.dp),
                     modifier = Modifier.align(Alignment.BottomEnd)
@@ -264,7 +264,7 @@ fun GridGroceryCard(
                 }
             }
 
-            // Info area
+            // Info
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(
                     text = item.name,

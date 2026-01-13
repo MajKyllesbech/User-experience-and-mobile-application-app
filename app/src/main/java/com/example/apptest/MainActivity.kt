@@ -103,8 +103,15 @@ fun GroceryApp() {
             }
 
             Screen.FAVORITES -> {
-                FavoritesScreen(modifier = Modifier.padding(innerPadding))
+                FavoritesScreen(
+                    favorites = mockGroceryList.filter { it.isFavorite },
+                    onItemClicked = { item ->
+                        selectedProduct = item
+                        currentScreen = Screen.PRODUCT_DETAILS
+                    }
+                )
             }
+
 
             Screen.SHOPPING_LIST -> {
                 ShoppingListScreen(
@@ -133,9 +140,6 @@ fun GroceryApp() {
                     )
                 }
             }
-
-
-
         }
     }
 }
