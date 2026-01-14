@@ -64,10 +64,7 @@ fun GroceryApp() {
         mutableStateListOf<Int>()
     }
 
-
-    val shoppingList = remember {
-        mutableStateListOf<GroceryItem>()
-    }
+    val shoppingList = remember { mutableStateListOf<GroceryItem>() }
 
 
     Scaffold(
@@ -143,6 +140,9 @@ fun GroceryApp() {
                     shoppingList = shoppingList,
                     onRemoveItem = { item ->
                         shoppingList.remove(item)
+                    },
+                    onClearAll = {
+                        shoppingList.clear()
                     }
                 )
             }
