@@ -15,6 +15,7 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 @Composable
 fun ProductDetailsScreen(
     item: GroceryItem,
+    isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
     onAddToShoppingList: () -> Unit,
     onBack: () -> Unit
@@ -48,7 +49,7 @@ fun ProductDetailsScreen(
 
         IconButton(onClick = onToggleFavorite) {
             Icon(
-                imageVector = if (item.isFavorite)
+                imageVector = if (isFavorite)
                     Icons.Filled.Favorite
                 else
                     Icons.Outlined.FavoriteBorder,

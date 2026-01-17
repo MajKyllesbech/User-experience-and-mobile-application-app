@@ -6,10 +6,10 @@ data class GroceryItem(
     val name: String,
     val category: String,
     val price: Double,
-    val description: String,
-    val imageRes: Int? = null, // Optional: if you want to map specific images later //
-    val isFavorite: Boolean = false
+    val description: String = "",
+    val imageRes: Int? = null
 )
+
 
 // A much longer list of mock data
 val mockGroceryList = listOf(

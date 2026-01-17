@@ -19,6 +19,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.toMutableStateList
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +54,8 @@ fun GroceryApp() {
 
     var currentScreen by rememberSaveable { mutableStateOf(Screen.WELCOME) }
 
+    val viewModel: GroceryViewModel = viewModel()
+
     var selectedProduct by rememberSaveable { mutableStateOf<GroceryItem?>(null) }
 
     // This list holds the IDs of the items we like
@@ -63,8 +67,6 @@ fun GroceryApp() {
     ) {
         mutableStateListOf<Int>()
     }
-
-    val shoppingList = remember { mutableStateListOf<GroceryItem>() }
 
 
     Scaffold(
@@ -80,6 +82,7 @@ fun GroceryApp() {
     ) { innerPadding ->
 
         when (currentScreen) {
+
             Screen.WELCOME -> {
                 WelcomeScreen(
                     modifier = Modifier.padding(innerPadding),
@@ -92,81 +95,59 @@ fun GroceryApp() {
             Screen.HOME -> {
                 HomeScreen(
                     modifier = Modifier.padding(innerPadding),
-                    onAddToShoppingList = { item ->
-                        shoppingList.add(item)
-                    },
-                    onItemClicked = { item ->
-                        // Pass the favorite state to the details screen so the heart is correct there too
-                        val isFav = favorites.contains(item.id)
-                        selectedProduct = item.copy(isFavorite = isFav)
+                    onAddToShoppingList = { viewModel.addToShoppingList(it) },
+                    onItemClicked = {
+                        viewModel.selectProduct(it)
                         currentScreen = Screen.PRODUCT_DETAILS
                     },
-                    // 1. Pass the List of IDs
-                    favoriteIds = favorites,
-                    // 2. Define logic: Add or Remove from the list
-                    onToggleFavorite = { item ->
-                        if (favorites.contains(item.id)) {
-                            favorites.remove(item.id)
-                        } else {
-                            favorites.add(item.id)
-                        }
-                    }
+                    favoriteIds = viewModel.favoriteIds,
+                    onToggleFavorite = { viewModel.toggleFavorite(it) }
                 )
             }
 
 
-            Screen.PROFILE -> {
-                ProfileScreen(
-                    modifier = Modifier.padding(innerPadding)
+
+
+            Screen.SHOPPING_LIST -> {
+                ShoppingListScreen(
+                    shoppingList = viewModel.shoppingList,
+                    onRemoveItem = { item ->
+                        viewModel.removeFromShoppingList(item)
+                    },
+                    onClearAll = {
+                        viewModel.clearShoppingList()
+                    }
                 )
             }
 
             Screen.FAVORITES -> {
-                // Filter the list to find favorite objects
-                val myFavoriteItems = mockGroceryList.filter { favorites.contains(it.id) }
-
-                FavoritesScreen(
-                    favoriteItems = myFavoriteItems,
-                    // 1. Define what happens when delete is clicked:
-                    onRemoveItem = { itemToRemove ->
-                        favorites.remove(itemToRemove.id)
-                    },
-                    modifier = Modifier.padding(innerPadding)
-                )
+                FavoritesScreen(viewModel = viewModel())
             }
 
-            Screen.SHOPPING_LIST -> {
-                ShoppingListScreen(
-                    shoppingList = shoppingList,
-                    onRemoveItem = { item ->
-                        shoppingList.remove(item)
-                    },
-                    onClearAll = {
-                        shoppingList.clear()
-                    }
-                )
+            Screen.PROFILE -> {
+                ProfileScreen()
             }
 
             Screen.PRODUCT_DETAILS -> {
-                selectedProduct?.let { product ->
-                    ProductDetailsScreen(
-                        item = product,
-                        onAddToShoppingList = { shoppingList.add(product) },
-                        onToggleFavorite = {
-                            // 3. LOGIC: Actually add or remove the ID from the list
-                            if (favorites.contains(product.id)) {
-                                favorites.remove(product.id)
-                                selectedProduct = product.copy(isFavorite = false)
-                            } else {
-                                favorites.add(product.id)
-                                selectedProduct = product.copy(isFavorite = true)
-                            }
-                        },
-                        onBack = { currentScreen = Screen.HOME })
-                }
+
+                val product = viewModel.selectedProduct
+                    ?: return@Scaffold   // 👈 VIGTIG LINJE
+
+                ProductDetailsScreen(
+                    item = product,
+                    isFavorite = viewModel.isFavorite(product),
+                    onToggleFavorite = {
+                        viewModel.toggleFavorite(product)
+                    },
+                    onAddToShoppingList = {
+                        viewModel.addToShoppingList(product)
+                    },
+                    onBack = {
+                        currentScreen = Screen.HOME
+                    }
+                )
+
             }
-
-
 
         }
     }
