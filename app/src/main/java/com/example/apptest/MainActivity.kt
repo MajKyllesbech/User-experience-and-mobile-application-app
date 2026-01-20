@@ -68,6 +68,9 @@ fun GroceryApp() {
         mutableStateListOf<Int>()
     }
 
+    var selectedStore by rememberSaveable {
+        mutableStateOf(StoreChain.NETTO)
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -125,13 +128,17 @@ fun GroceryApp() {
             }
 
             Screen.PROFILE -> {
-                ProfileScreen()
+                ProfileScreen(
+                    selectedStore = selectedStore,
+                    onStoreSelected = { selectedStore = it }
+                )
             }
+
 
             Screen.PRODUCT_DETAILS -> {
 
                 val product = viewModel.selectedProduct
-                    ?: return@Scaffold   // 👈 VIGTIG LINJE
+                    ?: return@Scaffold
 
                 ProductDetailsScreen(
                     item = product,

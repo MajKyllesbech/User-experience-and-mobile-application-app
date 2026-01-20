@@ -20,9 +20,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.apptest.ui.theme.BluePrimary
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+    selectedStore: StoreChain,
+    onStoreSelected: (StoreChain) -> Unit
+) {
+    var showStoreSelector by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -73,7 +84,12 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
 
         // REPLACED "Account" with "Preferences" (More relevant for finding groceries)
         ProfileSectionTitle("Præferencer")
-        ProfileMenuItem(icon = Icons.Default.Store, title = "Mine Butikker") // Which stores to show (Netto, Rema, etc.)
+        ProfileMenuItem(
+            icon = Icons.Default.Store,
+            title = "Mine Butikker",
+            onClick = { showStoreSelector = true }
+        )
+
         ProfileMenuItem(icon = Icons.Default.Eco, title = "Kost & Allergener") // Gluten free, Organic, etc.
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -116,16 +132,21 @@ fun ProfileSectionTitle(title: String) {
 
 // Helper Composable for the Menu Rows
 @Composable
-fun ProfileMenuItem(icon: ImageVector, title: String) {
+fun ProfileMenuItem(
+    icon: ImageVector,
+    title: String,
+    onClick: () -> Unit = {}
+    ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
-            .clickable { /* Handle Click */ }
+            .clickable { onClick() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Icon Box
+
+    // Icon Box
         Box(
             modifier = Modifier
                 .size(40.dp)
