@@ -11,7 +11,7 @@ data class GroceryItem(
 )
 
 
-// A much longer list of mock data
+// Al mock data i vores app, ideelt set ville vi have reele varer igennem vores app.
 val mockGroceryList = listOf(
     // Big Offer Item (Index 0)
     GroceryItem(1, "Arla - Minimælk", "Dairy", 11.95, "Arla minimælk"),

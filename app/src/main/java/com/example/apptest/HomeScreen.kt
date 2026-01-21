@@ -28,8 +28,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onAddToShoppingList: (GroceryItem) -> Unit,
     onItemClicked: (GroceryItem) -> Unit,
-    favoriteIds: List<Int>,              // <--- 1. Receive the list of favorite IDs
-    onToggleFavorite: (GroceryItem) -> Unit // <--- 2. Receive the toggle action
+    favoriteIds: List<Int>,
+    onToggleFavorite: (GroceryItem) -> Unit
 ) {
 
     var searchText by rememberSaveable { mutableStateOf("") }
@@ -37,6 +37,8 @@ fun HomeScreen(
     val filteredItems = mockGroceryList.filter {
         it.name.contains(searchText, ignoreCase = true)
     }
+
+    // Frontend til Hjemme screen
 
     LazyColumn(
         modifier = modifier
@@ -118,9 +120,6 @@ fun HomeScreen(
     }
 }
 
-
-// --- Reusable Composables ---
-
 @Composable
 fun CategoryItem(icon: ImageVector, label: String, modifier: Modifier = Modifier) {
     Column(
@@ -144,11 +143,13 @@ fun CategoryItem(icon: ImageVector, label: String, modifier: Modifier = Modifier
     }
 }
 
+
+    // Frontend til varerdisplay
 @Composable
 fun GroceryItemCard(
     item: GroceryItem,
-    isFavorite: Boolean,            // <--- New parameter
-    onToggleFavorite: () -> Unit,   // <--- New parameter
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit,
     onAddToShoppingList: () -> Unit,
     onCardClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -172,7 +173,7 @@ fun GroceryItemCard(
                     style = MaterialTheme.typography.bodySmall
                 )
             }
-            // Right side: Price + Buttons
+            // Pris
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "${item.price} kr",
@@ -180,7 +181,7 @@ fun GroceryItemCard(
                     modifier = Modifier.padding(end = 8.dp)
                 )
 
-                // --- HEART BUTTON ---
+                // Hjerteknap
                 IconButton(onClick = onToggleFavorite) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
@@ -189,7 +190,7 @@ fun GroceryItemCard(
                     )
                 }
 
-                // --- CART BUTTON ---
+                // Indkøbsliste tilføj
                 IconButton(onClick = onAddToShoppingList) {
                     Icon(Icons.Default.AddShoppingCart, contentDescription = "Læg i kurv")
                 }
@@ -206,7 +207,7 @@ fun HomeScreenPreview() {
         HomeScreen(
             onAddToShoppingList = {},
             onItemClicked = {},
-            favoriteIds = listOf(1), // Preview with item 1 selected
+            favoriteIds = listOf(1),
             onToggleFavorite = {}
         )
     }
@@ -216,7 +217,7 @@ fun HomeScreenPreview() {
 @Composable
 fun GridGroceryCard(
     item: GroceryItem,
-    onDeleteClick: (() -> Unit)? = null, // <--- 1. We add this optional delete action
+    onDeleteClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -226,7 +227,7 @@ fun GridGroceryCard(
         modifier = modifier.height(200.dp)
     ) {
         Column {
-            // Image / Icon Area
+            // Billedeikoner til varer
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -234,15 +235,14 @@ fun GridGroceryCard(
                     .background(Color(0xFFEEEEEE)),
                 contentAlignment = Alignment.Center
             ) {
-                // The Shopping Bag Icon
+                // Indkøbsliste ikonet
                 Icon(
                     Icons.Default.ShoppingBag,
                     contentDescription = null,
                     tint = Color.LightGray
                 )
 
-                // 2. THE TRASH CAN BUTTON
-                // We only show it if an onDeleteClick function is provided (like in Favorites)
+                // Skralde ikon
                 if (onDeleteClick != null) {
                     IconButton(
                         onClick = onDeleteClick,
@@ -258,7 +258,7 @@ fun GridGroceryCard(
                     }
                 }
 
-                // Price Badge
+                // Prisikon
                 androidx.compose.material3.Surface(
                     color = Color(0xFF1E1E1E).copy(alpha = 0.8f),
                     shape = RoundedCornerShape(topStart = 8.dp),
@@ -273,7 +273,7 @@ fun GridGroceryCard(
                 }
             }
 
-            // Info area
+            // Information afmærkning
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(
                     text = item.name,

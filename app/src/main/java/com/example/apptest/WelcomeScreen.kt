@@ -26,16 +26,15 @@ fun WelcomeScreen(modifier: Modifier = Modifier, onHomeClicked: () -> Unit) {
     Box(
         modifier = modifier.fillMaxSize()
     ) {
-        // 1. The Background Image
+        // Baggrundbillede i velkomst skærm
         Image(
-            painter = painterResource(id = R.drawable.welcome_bg), // Make sure your image is named welcome_bg
+            painter = painterResource(id = R.drawable.welcome_bg),
             contentDescription = "Welcome Background",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
 
-        // 2. A Gradient Overlay (Make text readable)
-        // This fades from transparent at the top to dark black at the bottom
+        // Frontend til velkomst skærm
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -43,25 +42,25 @@ fun WelcomeScreen(modifier: Modifier = Modifier, onHomeClicked: () -> Unit) {
                     Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            Color.Black.copy(alpha = 0.7f) // Darker at bottom
+                            Color.Black.copy(alpha = 0.7f) // Mørkere nederstedel
                         ),
-                        startY = 300f // Start gradient partway down
+                        startY = 300f
                     )
                 )
         )
 
-        // 3. The Content (Text and Button)
+        // Tekst og knap
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom // Push everything to bottom
+            verticalArrangement = Arrangement.Bottom
         ) {
-            // Main Headline
+            // Hovedtekst
             Text(
-                text = "Din guide til\nbillig indkøb", // "Your guide to cheap shopping"
-                style = MaterialTheme.typography.displayMedium, // Big text
+                text = "Din guide til\nbillig indkøb",
+                style = MaterialTheme.typography.displayMedium, // Stor tekst
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -79,25 +78,25 @@ fun WelcomeScreen(modifier: Modifier = Modifier, onHomeClicked: () -> Unit) {
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // The "Kom i gang" Button
+            // "Kom igang"
             Button(
                 onClick = onHomeClicked,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = BluePrimary // Uses the Blue we defined earlier
+                    containerColor = BluePrimary
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "Kom i gang", // "Get Started"
+                    text = "Kom i gang",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
 
-            Spacer(modifier = Modifier.height(40.dp)) // Extra space at very bottom
+            Spacer(modifier = Modifier.height(40.dp)) // Ekstra plads i bunden
         }
     }
 }
