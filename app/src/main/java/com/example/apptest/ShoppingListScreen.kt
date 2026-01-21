@@ -22,6 +22,8 @@ fun ShoppingListScreen(
     onRemoveItem: (GroceryItem) -> Unit,
     onClearAll: () -> Unit
 ) {
+
+    // Frontend til indkøbsliste skærm
     Column(
         modifier = Modifier
             .fillMaxSize()

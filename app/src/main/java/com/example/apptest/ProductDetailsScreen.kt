@@ -31,6 +31,7 @@ fun ProductDetailsScreen(
     onAddToShoppingList: () -> Unit,
     onBack: () -> Unit
 ) {
+    // Frontend til "Detaljer til produkt"-skærmen ;)
     Column(
         modifier = Modifier
             .fillMaxSize()

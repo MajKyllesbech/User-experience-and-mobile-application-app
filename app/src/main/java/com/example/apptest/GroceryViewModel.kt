@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 class GroceryViewModel : ViewModel() {
 
 
-    // SHOPPING LIST
+    // Indkøbsliste
 
     private val _shoppingList = mutableStateListOf<GroceryItem>()
     val shoppingList: List<GroceryItem> = _shoppingList
@@ -24,7 +24,7 @@ class GroceryViewModel : ViewModel() {
     }
 
 
-    // SELECTED PRODUCT
+    // Valgt produkt
 
     var selectedProduct: GroceryItem? = null
         private set
@@ -34,7 +34,7 @@ class GroceryViewModel : ViewModel() {
     }
 
 
-    //  FAVORITES
+    //  Favorit
 
     private val _favoriteIds = mutableStateListOf<Int>()
     val favoriteIds: List<Int> = _favoriteIds

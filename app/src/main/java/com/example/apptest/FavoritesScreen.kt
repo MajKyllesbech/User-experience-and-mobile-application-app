@@ -23,6 +23,8 @@ fun FavoritesScreen(
         viewModel.favoriteIds.contains(it.id)
     }
 
+    // Frontend til favoritsiden
+
     Column(
         modifier = Modifier
             .fillMaxSize()

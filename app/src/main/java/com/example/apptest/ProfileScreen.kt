@@ -34,6 +34,7 @@ fun ProfileScreen(
 ) {
     var showStoreSelector by remember { mutableStateOf(false) }
 
+    // Frontend til profilskærm
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -118,7 +119,6 @@ fun ProfileScreen(
     }
 }
 
-// Helper Composable for the Section Headers
 @Composable
 fun ProfileSectionTitle(title: String) {
     Text(
@@ -130,13 +130,14 @@ fun ProfileSectionTitle(title: String) {
     )
 }
 
-// Helper Composable for the Menu Rows
 @Composable
 fun ProfileMenuItem(
     icon: ImageVector,
     title: String,
     onClick: () -> Unit = {}
     ) {
+
+    // Frontend til profilmenu
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -146,7 +147,7 @@ fun ProfileMenuItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-    // Icon Box
+    // Box ikon
         Box(
             modifier = Modifier
                 .size(40.dp)
@@ -159,14 +160,14 @@ fun ProfileMenuItem(
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        // Title
+        // Titel
         Text(
             text = title,
             modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.bodyLarge
         )
 
-        // Arrow Icon
+        // Pil ikon
         Icon(
             Icons.AutoMirrored.Filled.ArrowForwardIos,
             contentDescription = null,
@@ -174,6 +175,6 @@ fun ProfileMenuItem(
             tint = Color.LightGray
         )
     }
-    // Thin divider line
+    // Tynd linje som adskiller
     HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray.copy(alpha = 0.3f))
 }

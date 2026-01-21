@@ -58,7 +58,7 @@ fun GroceryApp() {
 
     var selectedProduct by rememberSaveable { mutableStateOf<GroceryItem?>(null) }
 
-    // This list holds the IDs of the items we like
+    // Listen gemmer de ting vi trykker favorit ved :))
     val favorites = rememberSaveable(
         saver = listSaver(
             save = { stateList -> stateList.toList() },
@@ -85,7 +85,7 @@ fun GroceryApp() {
     ) { innerPadding ->
 
         when (currentScreen) {
-
+            // Velkommen skærm
             Screen.WELCOME -> {
                 WelcomeScreen(
                     modifier = Modifier.padding(innerPadding),
@@ -94,7 +94,7 @@ fun GroceryApp() {
                     }
                 )
             }
-
+            // Hjem skærm
             Screen.HOME -> {
                 HomeScreen(
                     modifier = Modifier.padding(innerPadding),
@@ -107,10 +107,7 @@ fun GroceryApp() {
                     onToggleFavorite = { viewModel.toggleFavorite(it) }
                 )
             }
-
-
-
-
+            // Indkøbslite skærm
             Screen.SHOPPING_LIST -> {
                 ShoppingListScreen(
                     shoppingList = viewModel.shoppingList,
@@ -122,19 +119,18 @@ fun GroceryApp() {
                     }
                 )
             }
-
+            // Favorit skærm
             Screen.FAVORITES -> {
                 FavoritesScreen(viewModel = viewModel())
             }
-
+            // Profil skærm
             Screen.PROFILE -> {
                 ProfileScreen(
                     selectedStore = selectedStore,
                     onStoreSelected = { selectedStore = it }
                 )
             }
-
-
+            // "Detaljer om et produkt"-skærm
             Screen.PRODUCT_DETAILS -> {
 
                 val product = viewModel.selectedProduct
@@ -153,9 +149,7 @@ fun GroceryApp() {
                         currentScreen = Screen.HOME
                     }
                 )
-
             }
-
         }
     }
 }

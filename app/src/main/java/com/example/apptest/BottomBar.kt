@@ -17,7 +17,7 @@ fun BottomBar(
     onScreenSelected: (Screen) -> Unit
 ) {
     NavigationBar {
-        // Home Button
+        // Hjem knap
         NavigationBarItem(
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
             label = { Text("Home") },
@@ -25,7 +25,7 @@ fun BottomBar(
             onClick = { onScreenSelected(Screen.HOME) }
         )
 
-        // Cart Button
+        // Indkøbsliste knap
         NavigationBarItem(
             icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Cart") },
             label = { Text("Cart") },
@@ -33,7 +33,7 @@ fun BottomBar(
             onClick = { onScreenSelected(Screen.SHOPPING_LIST) }
         )
 
-        // Favorites Button
+        // Favoritter knap
         NavigationBarItem(
             icon = { Icon(Icons.Default.Favorite, contentDescription = "Favorites") },
             label = { Text("Favorites") },
@@ -41,7 +41,7 @@ fun BottomBar(
             onClick = { onScreenSelected(Screen.FAVORITES) }
         )
 
-        // Profile Button
+        // Profil knap
         NavigationBarItem(
             icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
             label = { Text("Profile") },
