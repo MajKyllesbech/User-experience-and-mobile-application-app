@@ -21,6 +21,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.apptest.ui.theme.AppTestTheme
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -147,8 +152,8 @@ fun CategoryItem(icon: ImageVector, label: String, modifier: Modifier = Modifier
 @Composable
 fun GroceryItemCard(
     item: GroceryItem,
-    isFavorite: Boolean,            // <--- New parameter
-    onToggleFavorite: () -> Unit,   // <--- New parameter
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit,
     onAddToShoppingList: () -> Unit,
     onCardClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -158,29 +163,71 @@ fun GroceryItemCard(
             .fillMaxWidth()
             .clickable { onCardClick() }
     ) {
+        // Main Row: Holds everything in one horizontal line
         Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(12.dp)
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.CenterVertically // <--- This forces everything to be vertically centered
         ) {
-            Column {
-                Text(text = item.name, fontWeight = FontWeight.Bold)
+
+            // 1. THE IMAGE (Small)
+            if (item.imageRes != null) {
+                Image(
+                    painter = painterResource(id = item.imageRes),
+                    contentDescription = item.name,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                )
+            } else {
+                // Fallback Grey Box if no image
+                Box(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.LightGray),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingBag,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            // 2. TEXT (Name & Category)
+            // .weight(1f) means: "Take up all the empty space in the middle"
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = item.name,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyLarge
+                )
                 Text(
                     text = item.category,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
                 )
             }
-            // Right side: Price + Buttons
-            Row(verticalAlignment = Alignment.CenterVertically) {
+
+            // 3. RIGHT SIDE (Price + Buttons)
+            // These will sit firmly on the right side
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = "${item.price} kr",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(end = 8.dp)
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(end = 4.dp)
                 )
 
-                // --- HEART BUTTON ---
                 IconButton(onClick = onToggleFavorite) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
@@ -189,9 +236,11 @@ fun GroceryItemCard(
                     )
                 }
 
-                // --- CART BUTTON ---
                 IconButton(onClick = onAddToShoppingList) {
-                    Icon(Icons.Default.AddShoppingCart, contentDescription = "Læg i kurv")
+                    Icon(
+                        imageVector = Icons.Default.AddShoppingCart,
+                        contentDescription = "Læg i kurv"
+                    )
                 }
             }
         }
@@ -216,7 +265,7 @@ fun HomeScreenPreview() {
 @Composable
 fun GridGroceryCard(
     item: GroceryItem,
-    onDeleteClick: (() -> Unit)? = null, // <--- 1. We add this optional delete action
+    onDeleteClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -234,20 +283,30 @@ fun GridGroceryCard(
                     .background(Color(0xFFEEEEEE)),
                 contentAlignment = Alignment.Center
             ) {
-                // The Shopping Bag Icon
-                Icon(
-                    Icons.Default.ShoppingBag,
-                    contentDescription = null,
-                    tint = Color.LightGray
-                )
+                // --- NEW IMAGE LOGIC ---
+                if (item.imageRes != null) {
+                    Image(
+                        painter = painterResource(id = item.imageRes),
+                        contentDescription = item.name,
+                        contentScale = ContentScale.Crop, // Makes image fill the box
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Icon(
+                        Icons.Default.ShoppingBag,
+                        contentDescription = null,
+                        tint = Color.LightGray,
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
+                // -----------------------
 
-                // 2. THE TRASH CAN BUTTON
-                // We only show it if an onDeleteClick function is provided (like in Favorites)
+                // Delete Button (Keep existing logic)
                 if (onDeleteClick != null) {
                     IconButton(
                         onClick = onDeleteClick,
                         modifier = Modifier
-                            .align(Alignment.TopEnd) // Place it in top right corner
+                            .align(Alignment.TopEnd)
                             .padding(4.dp)
                     ) {
                         Icon(
@@ -258,7 +317,7 @@ fun GridGroceryCard(
                     }
                 }
 
-                // Price Badge
+                // Price Badge (Keep existing logic)
                 androidx.compose.material3.Surface(
                     color = Color(0xFF1E1E1E).copy(alpha = 0.8f),
                     shape = RoundedCornerShape(topStart = 8.dp),
@@ -273,18 +332,10 @@ fun GridGroceryCard(
                 }
             }
 
-            // Info area
+            // Info area (Keep existing)
             Column(modifier = Modifier.padding(12.dp)) {
-                Text(
-                    text = item.name,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1
-                )
-                Text(
-                    text = item.category,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
+                Text(text = item.name, fontWeight = FontWeight.Bold, maxLines = 1)
+                Text(text = item.category, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             }
         }
     }
