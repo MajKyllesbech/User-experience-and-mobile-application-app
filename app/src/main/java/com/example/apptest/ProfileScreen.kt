@@ -38,14 +38,14 @@ fun ProfileScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F9FA)) // Light Grey Background
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
         // --- 1. Header Section ---
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -54,14 +54,14 @@ fun ProfileScreen(
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFFE0E0E0)),
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.Default.Person,
                     contentDescription = null,
                     modifier = Modifier.size(64.dp),
-                    tint = Color.Gray
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -125,7 +125,7 @@ fun ProfileSectionTitle(title: String) {
         text = title,
         modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
         style = MaterialTheme.typography.labelLarge,
-        color = Color.Gray,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         fontWeight = FontWeight.Bold
     )
 }
@@ -141,7 +141,7 @@ fun ProfileMenuItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable { onClick() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -176,5 +176,8 @@ fun ProfileMenuItem(
         )
     }
     // Tynd linje som adskiller
-    HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray.copy(alpha = 0.3f))
+    HorizontalDivider(
+        thickness = 0.5.dp,
+        color = MaterialTheme.colorScheme.outlineVariant
+    )
 }

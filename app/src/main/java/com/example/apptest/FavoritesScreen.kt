@@ -28,7 +28,7 @@ fun FavoritesScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F9FA))
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
         Text(
