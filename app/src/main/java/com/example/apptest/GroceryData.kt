@@ -14,7 +14,7 @@ data class GroceryItem(
 // Al mock data i vores app, ideelt set ville vi have reele varer igennem vores app.
 val mockGroceryList = listOf(
     // Big Offer Item (Index 0)
-    GroceryItem(1, "Arla - Minimælk", "Dairy", 11.95, "Arla minimælk",imageRes = R.drawable.arla_minimaelk),
+    GroceryItem(1, "Arla - Minimælk", "Dairy", 11.95, "Bag det grønne 24-timers mærke banker et hjerte for frisk mælk og dyrevelfærd. Mælken leveres inden for 24 timer fra gård til butik og vores køer græsser udenfor om sommeren og går frit i staldene om vinteren. Arla 24 – Bedre dyrevelfærd året rundt. Arla® 24 Minimælk har en fedtprocent på kun 0,4%. Minimælken er mærket med det grønne nøglehul, der guider til et sundere valg. Arla® 24 findes også som skummet-, let- og sødmælk.",imageRes = R.drawable.arla_minimaelk),
 
     // Suggested Grid Items
     GroceryItem(2, "Kims Chips", "Snacks", 18.00, "Kims",imageRes = R.drawable.kims_chips),
