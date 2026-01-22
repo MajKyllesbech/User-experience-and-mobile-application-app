@@ -33,8 +33,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onAddToShoppingList: (GroceryItem) -> Unit,
     onItemClicked: (GroceryItem) -> Unit,
-    favoriteIds: List<Int>,              // <--- 1. Receive the list of favorite IDs
-    onToggleFavorite: (GroceryItem) -> Unit // <--- 2. Receive the toggle action
+    favoriteIds: List<Int>,
+    onToggleFavorite: (GroceryItem) -> Unit
 ) {
 
     var searchText by rememberSaveable { mutableStateOf("") }
@@ -48,7 +48,7 @@ fun HomeScreen(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        // "Hello" Greeting
+        // "Hej, bruger!" hilsen i starten
         item {
             Spacer(Modifier.height(16.dp))
             Text(
@@ -59,7 +59,7 @@ fun HomeScreen(
             Spacer(Modifier.height(16.dp))
         }
 
-        // Search Bar
+        // Søgefeldt
         item {
             OutlinedTextField(
                 value = searchText,
@@ -72,7 +72,7 @@ fun HomeScreen(
             Spacer(Modifier.height(24.dp))
         }
 
-        // Categories
+        // Kategorier
         item {
             Text(
                 text = "Kategorier",
@@ -102,15 +102,13 @@ fun HomeScreen(
             Spacer(Modifier.height(16.dp))
         }
 
-        // List of Grocery Items
         items(filteredItems) { item ->
-            // 3. Determine if this specific item is a favorite
             val isFavorite = favoriteIds.contains(item.id)
 
             GroceryItemCard(
                 item = item,
-                isFavorite = isFavorite, // <--- Pass the state
-                onToggleFavorite = { onToggleFavorite(item) }, // <--- Pass the action
+                isFavorite = isFavorite,
+                onToggleFavorite = { onToggleFavorite(item) },
                 onAddToShoppingList = { onAddToShoppingList(item) },
                 onCardClick = { onItemClicked(item) }
             )
@@ -163,15 +161,14 @@ fun GroceryItemCard(
             .fillMaxWidth()
             .clickable { onCardClick() }
     ) {
-        // Main Row: Holds everything in one horizontal line
         Row(
             modifier = Modifier
                 .padding(12.dp)
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically // <--- This forces everything to be vertically centered
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // 1. THE IMAGE (Small)
+            // Lille billede
             if (item.imageRes != null) {
                 Image(
                     painter = painterResource(id = item.imageRes),
@@ -182,7 +179,6 @@ fun GroceryItemCard(
                         .clip(RoundedCornerShape(8.dp))
                 )
             } else {
-                // Fallback Grey Box if no image
                 Box(
                     modifier = Modifier
                         .size(60.dp)
@@ -200,8 +196,6 @@ fun GroceryItemCard(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // 2. TEXT (Name & Category)
-            // .weight(1f) means: "Take up all the empty space in the middle"
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -217,8 +211,6 @@ fun GroceryItemCard(
                 )
             }
 
-            // 3. RIGHT SIDE (Price + Buttons)
-            // These will sit firmly on the right side
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -247,7 +239,7 @@ fun GroceryItemCard(
     }
 }
 
-// Preview
+// Preview, til at se dele
 @Preview(showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 fun HomeScreenPreview() {
@@ -255,13 +247,13 @@ fun HomeScreenPreview() {
         HomeScreen(
             onAddToShoppingList = {},
             onItemClicked = {},
-            favoriteIds = listOf(1), // Preview with item 1 selected
+            favoriteIds = listOf(1),
             onToggleFavorite = {}
         )
     }
 }
 
-// Used for Favorites Screen (kept as is)
+// Brugt bl.a. i favorite screen
 @Composable
 fun GridGroceryCard(
     item: GroceryItem,
@@ -288,7 +280,7 @@ fun GridGroceryCard(
                     Image(
                         painter = painterResource(id = item.imageRes),
                         contentDescription = item.name,
-                        contentScale = ContentScale.Crop, // Makes image fill the box
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
@@ -299,9 +291,7 @@ fun GridGroceryCard(
                         modifier = Modifier.size(40.dp)
                     )
                 }
-                // -----------------------
 
-                // Delete Button (Keep existing logic)
                 if (onDeleteClick != null) {
                     IconButton(
                         onClick = onDeleteClick,
@@ -317,7 +307,7 @@ fun GridGroceryCard(
                     }
                 }
 
-                // Price Badge (Keep existing logic)
+                // Pris markering
                 androidx.compose.material3.Surface(
                     color = Color(0xFF1E1E1E).copy(alpha = 0.8f),
                     shape = RoundedCornerShape(topStart = 8.dp),
@@ -332,7 +322,6 @@ fun GridGroceryCard(
                 }
             }
 
-            // Info area (Keep existing)
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(text = item.name, fontWeight = FontWeight.Bold, maxLines = 1)
                 Text(text = item.category, style = MaterialTheme.typography.bodySmall, color = Color.Gray)

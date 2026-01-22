@@ -107,7 +107,7 @@ fun GroceryApp() {
                     onToggleFavorite = { viewModel.toggleFavorite(it) }
                 )
             }
-            // Indkøbslite skærm
+            // Indkøbsliste skærm
             Screen.SHOPPING_LIST -> {
                 ShoppingListScreen(
                     shoppingList = viewModel.shoppingList,
