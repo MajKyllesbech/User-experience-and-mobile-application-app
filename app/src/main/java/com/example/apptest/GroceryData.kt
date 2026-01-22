@@ -17,11 +17,13 @@ val mockGroceryList = listOf(
     GroceryItem(1, "Arla - Minimælk", "Dairy", 11.95, "Bag det grønne 24-timers mærke banker et hjerte for frisk mælk og dyrevelfærd. Mælken leveres inden for 24 timer fra gård til butik og vores køer græsser udenfor om sommeren og går frit i staldene om vinteren. Arla 24 – Bedre dyrevelfærd året rundt. Arla® 24 Minimælk har en fedtprocent på kun 0,4%. Minimælken er mærket med det grønne nøglehul, der guider til et sundere valg. Arla® 24 findes også som skummet-, let- og sødmælk.",imageRes = R.drawable.arla_minimaelk),
 
     // Suggested Grid Items
-    GroceryItem(2, "Kims Chips", "Snacks", 18.00, "Kims",imageRes = R.drawable.kims_chips),
+    GroceryItem(2, "Kims Chips", "Snacks", 18.00, "KiMs Snack Chips Original er en kartoffelsnack med krydderi, supersprød, krydret klassiker!\n" +
+            "\n" +
+            "De firkantede Snack Chips i den gule pose er en sand klassiker, der så dagens lys helt tilbage i 1987. Snack Chips knaser ekstra højt – de er nemlig ekstra sprøde og svøbt i lækre krydderier. Vi har tilføjet riller i hver eneste chips, så smagen har et sted at lægge sig. Sagt mellem rillerne: Del dem med en god ven i larmende godt selskab.",imageRes = R.drawable.kims_chips),
     GroceryItem(3, "Gulerødder", "Produce", 9.95, "Økologiske gulerødder", imageRes = R.drawable.gulerodder),
     GroceryItem(4, "Rugbrød", "Bakery", 21.50, "Bagerns bedste rugbrød",imageRes = R.drawable.rugbroed),
     GroceryItem(5, "Hakket Oksekød", "Meat", 45.00, "Hakket Oksekød 4-7% fedt",imageRes = R.drawable.hakketoksekod),
-    GroceryItem(6, "Bananer (Bunt)", "Produce", 12.00, "5 bananer",imageRes = R.drawable.bananer),
+    GroceryItem(6, "Bananer (Bunt)", "Produce", 12.00, "Bananer modnes hurtigst ved stuetemperatur og bør ideelt set opbevares adskilt fra anden frugt for at undgå for hurtig forrådnelse",imageRes = R.drawable.bananer),
     GroceryItem(7, "Coca Cola 1.5L", "Drinks", 22.00, "Coca Cola 1,5 L",imageRes = R.drawable.cocacola),
     GroceryItem(8, "Æg (10 stk)", "Dairy", 24.50, "Æg fra en kylling",imageRes = R.drawable.aeg),
     GroceryItem(9, "Smør", "Dairy", 19.95, "Smør fra kærgaarden",imageRes = R.drawable.kaeraarden),
